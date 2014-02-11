@@ -16,12 +16,14 @@ $(document).ready(function () {
 			joneskeeping: 0,
 			intimidation: 0,
 			delegation: 0
-		}
+		},
+		level: 1
 	}, dom;
 
 	function cacheDom() {
 		var $details = $('#details');
 		dom = {
+			level: $('.level'),
 			itemsList: $('.items-list'),
 			cash: $details.find('.cash'),
 			frats: $details.find('.frats'),
@@ -42,6 +44,7 @@ $(document).ready(function () {
 			liquidateAsset: $('#liquidate-asset'),
 			improveAsset: $('#improve-asset'),
 			showItems: $('#show-items'),
+			levelUp: $('#level-up'),
 			nextTurn: $('#next-turn')
 		};
 	}
@@ -153,6 +156,12 @@ $(document).ready(function () {
 			
 		});
 
+		dom.levelUp.on('click', function () {
+			profile.level += 1;
+
+			updateUI();
+		});
+
 		dom.nextTurn.on('click', function () {
 			var vice, smallest;
 			profile.cash += profile.assets * Math.random() * 100;
@@ -204,6 +213,7 @@ $(document).ready(function () {
 	}
 
 	function updateUI() {
+		dom.level.text(profile.level);
 		dom.cash.text(profile.cash);
 		dom.frats.text(profile.frats);
 		dom.actions.text(profile.actions);
@@ -244,159 +254,282 @@ $(document).ready(function () {
 							value: 4
 						}
 					},
+					itemLevel: 7
 				},
 				{
-					affix: 'excess1'
+					affix: 'excess1',
+					itemLevel: 1
 				},
 				{
-					affix: 'luxury1'
+					affix: 'luxury1',
+					itemLevel: 1
 				},
 				{
-					affix: 'fame1'
+					affix: 'fame1',
+					itemLevel: 1
 				},
 				{
-					affix: 'joneskeeping1'
+					affix: 'joneskeeping1',
+					itemLevel: 1
 				},
 				{
-					affix: 'intimidation1'
+					affix: 'intimidation1',
+					itemLevel: 1
 				},
 				{
-					affix: 'delegation1'
+					affix: 'delegation1',
+					itemLevel: 1
 				},
 				{
-					affix: 'boner1'
+					affix: 'boner1',
+					itemLevel: 1
 				},
 				{
-					affix: 'excess2'
+					affix: 'excess2',
+					itemLevel: 2
 				},
 				{
-					affix: 'luxury2'
+					affix: 'luxury2',
+					itemLevel: 2
 				},
 				{
-					affix: 'fame2'
+					affix: 'fame2',
+					itemLevel: 2
 				},
 				{
-					affix: 'joneskeeping2'
+					affix: 'joneskeeping2',
+					itemLevel: 2
 				},
 				{
-					affix: 'intimidation2'
+					affix: 'intimidation2',
+					itemLevel: 2
 				},
 				{
-					affix: 'delegation2'
+					affix: 'delegation2',
+					itemLevel: 2
 				},
 				{
-					affix: 'boner2'
+					affix: 'boner2',
+					itemLevel: 2
 				},
 				{
-					affix: 'excess3'
+					affix: 'excess3',
+					itemLevel: 3
 				},
 				{
-					affix: 'luxury3'
+					affix: 'luxury3',
+					itemLevel: 3
 				},
 				{
-					affix: 'fame3'
+					affix: 'fame3',
+					itemLevel: 3
 				},
 				{
-					affix: 'joneskeeping3'
+					affix: 'joneskeeping3',
+					itemLevel: 3
 				},
 				{
-					affix: 'intimidation3'
+					affix: 'intimidation3',
+					itemLevel: 3
 				},
 				{
-					affix: 'delegation3'
+					affix: 'delegation3',
+					itemLevel: 3
 				},
 				{
-					affix: 'boner3'
+					affix: 'boner3',
+					itemLevel: 3
 				},
 				{
-					affix: 'excess4'
+					affix: 'excess4',
+					itemLevel: 4
 				},
 				{
-					affix: 'luxury4'
+					affix: 'luxury4',
+					itemLevel: 4
 				},
 				{
-					affix: 'fame4'
+					affix: 'fame4',
+					itemLevel: 4
 				},
 				{
-					affix: 'joneskeeping4'
+					affix: 'joneskeeping4',
+					itemLevel: 4
 				},
 				{
-					affix: 'intimidation4'
+					affix: 'intimidation4',
+					itemLevel: 4
 				},
 				{
-					affix: 'delegation4'
+					affix: 'delegation4',
+					itemLevel: 4
 				},
 				{
-					affix: 'boner4'
+					affix: 'boner4',
+					itemLevel: 4
 				},
 				{
-					affix: 'excess5'
+					affix: 'excess5',
+					itemLevel: 5
 				},
 				{
-					affix: 'luxury5'
+					affix: 'luxury5',
+					itemLevel: 5
 				},
 				{
-					affix: 'fame5'
+					affix: 'fame5',
+					itemLevel: 5
 				},
 				{
-					affix: 'joneskeeping5'
+					affix: 'joneskeeping5',
+					itemLevel: 5
 				},
 				{
-					affix: 'intimidation5'
+					affix: 'intimidation5',
+					itemLevel: 5
 				},
 				{
-					affix: 'delegation5'
+					affix: 'delegation5',
+					itemLevel: 5
 				},
 				{
-					affix: 'boner5'
+					affix: 'boner5',
+					itemLevel: 5
 				},
 				{
-					affix: 'excess6'
+					affix: 'excess6',
+					itemLevel: 6
 				},
 				{
-					affix: 'luxury6'
+					affix: 'luxury6',
+					itemLevel: 6
 				},
 				{
-					affix: 'fame6'
+					affix: 'fame6',
+					itemLevel: 6
 				},
 				{
-					affix: 'joneskeeping6'
+					affix: 'joneskeeping6',
+					itemLevel: 6
 				},
 				{
-					affix: 'intimidation6'
+					affix: 'intimidation6',
+					itemLevel: 6
 				},
 				{
-					affix: 'delegation6'
+					affix: 'delegation6',
+					itemLevel: 6
 				},
 				{
-					affix: 'boner6'
+					affix: 'boner6',
+					itemLevel: 6
 				},
 				{
-					affix: 'excess7'
+					affix: 'excess7',
+					itemLevel: 7
 				},
 				{
-					affix: 'luxury7'
+					affix: 'luxury7',
+					itemLevel: 7
 				},
 				{
-					affix: 'fame7'
+					affix: 'fame7',
+					itemLevel: 7
 				},
 				{
-					affix: 'joneskeeping7'
+					affix: 'joneskeeping7',
+					itemLevel: 7
 				},
 				{
-					affix: 'intimidation7'
+					affix: 'intimidation7',
+					itemLevel: 7
 				},
 				{
-					affix: 'delegation7'
+					affix: 'delegation7',
+					itemLevel: 7
 				},
 				{
-					affix: 'boner7'
+					affix: 'boner7',
+					itemLevel: 7
 				},
-			];
+				{
+					affix: 'epic1',
+					itemLevel: -1
+				},
+				{
+					affix: 'epic2',
+					itemLevel: -1
+				},
+				{
+					affix: 'epic3',
+					itemLevel: -1
+				},
+				{
+					affix: 'epic4',
+					itemLevel: -1
+				},
+				{
+					affix: 'epic5',
+					itemLevel: -1
+				},
+				{
+					affix: 'epic6',
+					itemLevel: -1
+				},
+				{
+					affix: 'epic7',
+					itemLevel: -1
+				},
+			],
+			itemsByLevel,
+			rolledLevelItems,
+			rolledLevel;
 
-		i = Math.floor(Math.random() * possibleItems.length);
 
-		return possibleItems[i];
+		rolledLevel = getRandomItemLevel();
+
+		itemsByLevel = getItemsByLevel(possibleItems);
+
+		i = Math.floor(Math.random() * itemsByLevel[rolledLevel].length);
+
+		return itemsByLevel[rolledLevel][i];
+	}
+
+	function getRandomItemLevel() {
+		var i = Math.floor(Math.random() * 100);
+
+		if (i < 70) {
+			return profile.level;
+		}
+
+		if (i < 90) {
+			return profile.level + 1;
+		}
+
+		if (i < 95) {
+			return profile.level + 2;
+		}
+
+		if (i < 98) {
+			return profile.level + 3;
+		}
+
+		return -1;
+	}
+
+	function getItemsByLevel(possibleItems) {
+		var itemsByLevel = [],
+			i;
+
+		for (i = 0; i < possibleItems.length; i += 1) {
+			if (itemsByLevel[possibleItems[i].itemLevel] === undefined) {
+				itemsByLevel[possibleItems[i].itemLevel] = [];
+			}
+
+			itemsByLevel[possibleItems[i].itemLevel].push(possibleItems[i]);
+		}
+
+		return itemsByLevel;
 	}
 
 	cacheDom();
