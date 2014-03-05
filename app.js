@@ -139,21 +139,26 @@ $(document).ready(function () {
 		});
 
 		dom.showItems.on('click', function () {
-			var element,
+			var element, btnBuy, $element,
 				items = getRandomItems(),
 				items2 = getRandomItems(),
 				items3 = getRandomItems(),
-				i; 
+				i;
 
 			dom.itemsList.empty();
 
-			for (i = 0; i < items.length ; i += 1) { 
+			for (i = 0; i < items.length ; i += 1) {
 				element = document.createElement('li');
-				$(element).text(items[i].affix + ' ' + items2[i].affix + ' of ' + items3[i].affix);
+				btnBuy = document.createElement('button');
+				$(btnBuy).text('Buy');
+				$element = $(element);
+				$element.text(items[i].affix + ' ' + items2[i].affix + ' of ' + items3[i].affix + ': $' + commafy(getPriceFor([items[i], items2[i], items3[i]])));
+				$element.append(btnBuy);
+				$element.data('items', [items[i], items2[i], items3[i]]);
 				dom.itemsList.append(element);
 			}
 
-			
+			dom.itemsList.find('button').on('click', purchaseItem);
 		});
 
 		dom.levelUp.on('click', function () {
@@ -181,6 +186,42 @@ $(document).ready(function () {
 
 			updateUI();
 		});
+	}
+
+	function () {
+
+	}
+
+	function commafy(figure) {
+		var split = figure.toString().split(''),
+			commafied = '',
+			i, j = 0;
+
+		for (i = split.length; i > 0; i -= 1) {
+			if (j % 3 === 0 && j > 0) {
+				commafied = ',' + commafied;
+			}
+
+			j += 1;
+
+			commafied = split[i - 1] + commafied;
+		}
+
+		return commafied;
+	}
+
+	function getPriceFor(items) {
+		var cost = 0, i;
+
+		for (i = 0; i < items.length; i += 1) {
+			if (items[i].itemLevel > 0) {
+				cost += items[i].itemLevel * Math.pow(10, profile.level);
+			} else {
+				cost += (profile.level + 3) * Math.pow(10, profile.level + 1);
+			}
+		}
+
+		return cost;
 	}
 
 	function getRandomPrefix() {
@@ -228,6 +269,8 @@ $(document).ready(function () {
 		dom.intimidation.text(profile.viceOMeter.intimidation);
 		dom.delegation.text(profile.viceOMeter.delegation);
 	}
+
+
 
 	function getRandomItems() {
 		var items = [], 
