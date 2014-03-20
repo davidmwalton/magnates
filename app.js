@@ -3,12 +3,12 @@
 $(document).ready(function () {
 	var profile = {
 		cash: 100,
-		frats: 0,
+		frats: 0, // think: clout
 		actions: 3,
 		investments: 0,
-		assets: 0,
+		assets: [],
 		assetImprovements: 0,
-		viceOMeter: {
+		baseViceOMeter: {
 			boner: 0,
 			excess: 0,
 			luxury: 0,
@@ -64,71 +64,74 @@ $(document).ready(function () {
 			updateUI();
 		});
 
-		dom.addAsset.on('click', function () {
-			profile.assets += 1;
+		// dom.addAsset.on('click', function () {
+		// 	profile.assets += 1;
 
-			switch (Math.floor(Math.random() * 7)) {
-				case 0:
-					profile.viceOMeter.boner += 1;
-					break;
-				case 1:
-					profile.viceOMeter.excess += 1;
-					break;
-				case 2:
-					profile.viceOMeter.luxury += 1;
-					break;
-				case 3:
-					profile.viceOMeter.fame += 1;
-					break;
-				case 4:
-					profile.viceOMeter.joneskeeping += 1;
-					break;
-				case 5:
-					profile.viceOMeter.intimidation += 1;
-					break;
-				case 6:
-					profile.viceOMeter.delegation += 1;
-					break;
-			}
+		// 	switch (Math.floor(Math.random() * 7)) {
+		// 		case 0:
+		// 			profile.viceOMeter.boner += 1;
+		// 			break;
+		// 		case 1:
+		// 			profile.viceOMeter.excess += 1;
+		// 			break;
+		// 		case 2:
+		// 			profile.viceOMeter.luxury += 1;
+		// 			break;
+		// 		case 3:
+		// 			profile.viceOMeter.fame += 1;
+		// 			break;
+		// 		case 4:
+		// 			profile.viceOMeter.joneskeeping += 1;
+		// 			break;
+		// 		case 5:
+		// 			profile.viceOMeter.intimidation += 1;
+		// 			break;
+		// 		case 6:
+		// 			profile.viceOMeter.delegation += 1;
+		// 			break;
+		// 	}
 
-			updateUI();
-		});
+		// 	updateUI();
+		// });
 
 		dom.liquidateAsset.on('click', function () {
-			profile.assets -= 1;
+			if (profile.assets.length > 0) {
+				profile.assets.pop();
+			}
 
-			if (profile.assets < 0) {
-				profile.assets = 0;
+			if (profile.assets.length < 1) {
 				profile.assetImprovements = 0;
 			}
+
 			updateUI();
 		});
+
 		dom.improveAsset.on('click', function () {
 
-			if (profile.assets > 0) {
+			if (profile.assets.length > 0) {
 				profile.assetImprovements += 1;
 
 				switch (Math.floor(Math.random() * 7)) {
 					case 0:
-						profile.viceOMeter.boner += 2;
+						profile.baseViceOMeter.boner += 2;
 						break;
 					case 1:
-						profile.viceOMeter.excess += 2;
+						profile.baseViceOMeter.excess += 2;
 						break;
 					case 2:
-						profile.viceOMeter.luxury += 2;
+						profile.baseViceOMeter.luxury += 2;
 						break;
 					case 3:
-						profile.viceOMeter.fame += 2;
+						profile.baseViceOMeter.fame += 2;
 						break;
 					case 4:
-						profile.viceOMeter.joneskeeping += 2;
+						profile.baseViceOMeter.joneskeeping += 2;
 						break;
 					case 5:
-						profile.viceOMeter.intimidation += 2;
+						profile.baseViceOMeter.intimidation += 2;
 						break;
 					case 6:
-						profile.viceOMeter.delegation += 2;
+						profile.baseViceOMeter.delegation += 2;
 						break;
 				}
 
@@ -141,8 +144,6 @@ $(document).ready(function () {
 		dom.showItems.on('click', function () {
 			var element, btnBuy, $element,
 				items = getRandomItems(),
-				items2 = getRandomItems(),
-				items3 = getRandomItems(),
 				i;
 
 			dom.itemsList.empty();
@@ -152,9 +153,9 @@ $(document).ready(function () {
 				btnBuy = document.createElement('button');
 				$(btnBuy).text('Buy');
 				$element = $(element);
-				$element.text(items[i].affix + ' ' + items2[i].affix + ' of ' + items3[i].affix + ': $' + commafy(getPriceFor([items[i], items2[i], items3[i]])));
+				$element.text(items[i].prefix.affix + ' ' + items[i].root.affix + ' of ' + items[i].suffix.affix + ': $' + commafy(getPriceFor(items[i])));
 				$element.append(btnBuy);
-				$element.data('items', [items[i], items2[i], items3[i]]);
+				$element.data('item', items[i]);
 				dom.itemsList.append(element);
 			}
 
@@ -169,16 +170,16 @@ $(document).ready(function () {
 
 		dom.nextTurn.on('click', function () {
 			var vice, smallest;
-			profile.cash += profile.assets * Math.random() * 100;
+			profile.cash += profile.assets.length * Math.random() * 100;
 
 			smallest = 9999;
-			for (vice in profile.viceOMeter) {
-				if (profile.viceOMeter[vice] < smallest) {
-					smallest = profile.viceOMeter[vice];
-					profile.viceOMeter[vice] -= 1;
+			for (vice in profile.baseViceOMeter) {
+				if (profile.baseViceOMeter[vice] < smallest) {
+					smallest = profile.baseViceOMeter[vice];
+					profile.baseViceOMeter[vice] -= 1;
 
-					if (profile.viceOMeter[vice] < 0) {
-						profile.viceOMeter[vice] = 0;
+					if (profile.baseViceOMeter[vice] < 0) {
+						profile.baseViceOMeter[vice] = 0;
 					}
 				}
 			}
@@ -188,8 +189,18 @@ $(document).ready(function () {
 		});
 	}
 
-	function () {
+	function purchaseItem() {
+		var $this = $(this),
+			item = $this.parent().data('item'),
+			price = getPriceFor(item);
 
+		if (profile.cash >= price) {
+			profile.cash -= price;
+			profile.assets.push(item);
+			$this.attr('disabled', 'disabled');
+
+			updateUI();
+		}
 	}
 
 	function commafy(figure) {
@@ -210,15 +221,23 @@ $(document).ready(function () {
 		return commafied;
 	}
 
-	function getPriceFor(items) {
+	function getPriceFor(item) {
 		var cost = 0, i;
 
-		for (i = 0; i < items.length; i += 1) {
-			if (items[i].itemLevel > 0) {
-				cost += items[i].itemLevel * Math.pow(10, profile.level);
-			} else {
-				cost += (profile.level + 3) * Math.pow(10, profile.level + 1);
-			}
+		if (item.prefix.itemLevel > 0) {
+			cost += item.prefix.itemLevel * Math.pow(10, profile.level);
+		} else {
+			cost += (profile.level + 3) * Math.pow(10, profile.level + 1);
+		}
+		if (item.root.itemLevel > 0) {
+			cost += item.root.itemLevel * Math.pow(10, profile.level);
+		} else {
+			cost += (profile.level + 3) * Math.pow(10, profile.level + 1);
+		}
+		if (item.suffix.itemLevel > 0) {
+			cost += item.suffix.itemLevel * Math.pow(10, profile.level);
+		} else {
+			cost += (profile.level + 3) * Math.pow(10, profile.level + 1);
 		}
 
 		return cost;
@@ -229,25 +248,25 @@ $(document).ready(function () {
 
 		switch (prefixIndex) {
 			case 0:
-				profile.viceOMeter.boner += 2;
+				profile.baseViceOMeter.boner += 2;
 				break;
 			case 1:
-				profile.viceOMeter.excess += 2;
+				profile.baseViceOMeter.excess += 2;
 				break;
 			case 2:
-				profile.viceOMeter.luxury += 2;
+				profile.baseViceOMeter.luxury += 2;
 				break;
 			case 3:
-				profile.viceOMeter.fame += 2;
+				profile.baseViceOMeter.fame += 2;
 				break;
 			case 4:
-				profile.viceOMeter.joneskeeping += 2;
+				profile.baseViceOMeter.joneskeeping += 2;
 				break;
 			case 5:
-				profile.viceOMeter.intimidation += 2;
+				profile.baseViceOMeter.intimidation += 2;
 				break;
 			case 6:
-				profile.viceOMeter.delegation += 2;
+				profile.baseViceOMeter.delegation += 2;
 				break;
 		}
 
@@ -259,26 +278,60 @@ $(document).ready(function () {
 		dom.frats.text(profile.frats);
 		dom.actions.text(profile.actions);
 		dom.investments.text(profile.investments);
-		dom.assets.text(profile.assets);
+		dom.assets.text(profile.assets.length);
 		dom.assetImprovements.text(profile.assetImprovements);
-		dom.boner.text(profile.viceOMeter.boner);
-		dom.excess.text(profile.viceOMeter.excess);
-		dom.luxury.text(profile.viceOMeter.luxury);
-		dom.fame.text(profile.viceOMeter.fame);
-		dom.joneskeeping.text(profile.viceOMeter.joneskeeping);
-		dom.intimidation.text(profile.viceOMeter.intimidation);
-		dom.delegation.text(profile.viceOMeter.delegation);
+		
+		updateViceOMeterUI(getCurrentViceOMeter());
 	}
 
+	function getCurrentViceOMeter() {
+		var vices = ['boner', 'excess', 'luxury', 'fame', 'joneskeeping', 'intimidation', 'delegation'],
+			viceOMeter = $.extend({}, profile.baseViceOMeter),
+			i, v,
+			currentAsset,
+			currentVice;
 
+		for (i = 0; i < profile.assets.length; i += 1) {
+			currentAsset = profile.assets[i];
+
+			for (v = 0; v < vices.length; v += 1) {
+				currentVice = vices[v];
+
+				if (currentAsset.prefix.traits[currentVice] !== undefined) {
+					viceOMeter[currentVice] += currentAsset.prefix.traits[currentVice];
+				}
+				if (currentAsset.root.traits[currentVice] !== undefined) {
+					viceOMeter[currentVice] += currentAsset.root.traits[currentVice];
+				}
+				if (currentAsset.suffix.traits[currentVice] !== undefined) {
+					viceOMeter[currentVice] += currentAsset.suffix.traits[currentVice];
+				}
+			}
+		}
+
+		return viceOMeter;
+	}
+
+	function updateViceOMeterUI(viceOMeter) {
+		dom.boner.text(viceOMeter.boner);
+		dom.excess.text(viceOMeter.excess);
+		dom.luxury.text(viceOMeter.luxury);
+		dom.fame.text(viceOMeter.fame);
+		dom.joneskeeping.text(viceOMeter.joneskeeping);
+		dom.intimidation.text(viceOMeter.intimidation);
+		dom.delegation.text(viceOMeter.delegation);
+	}
 
 	function getRandomItems() {
-		var items = [], 
+		var items = [],
 			i;
 
 		for (i = 0; i < 5; i += 1) {
-			items.push(getRandomItem());
-
+			items.push({
+				prefix: getRandomItem(),
+				root: getRandomItem(),
+				suffix: getRandomItem()
+			});
 		}
 
 		return items;
@@ -290,238 +343,403 @@ $(document).ready(function () {
 				{
 					affix: 'Sample',
 					traits: {
-						luxury: {
-							value: 3
-						},
-						fame: {
-							value: 4
-						}
+						luxury: 3,
+						fame: 4
 					},
 					itemLevel: 7
 				},
 				{
 					affix: 'excess1',
-					itemLevel: 1
+					itemLevel: 1,
+					traits: {
+						excess: 1
+					}
 				},
 				{
 					affix: 'luxury1',
-					itemLevel: 1
+					itemLevel: 1,
+					traits: {
+						luxury: 1
+					}
 				},
 				{
 					affix: 'fame1',
-					itemLevel: 1
+					itemLevel: 1,
+					traits: {
+						fame: 1
+					}
 				},
 				{
 					affix: 'joneskeeping1',
-					itemLevel: 1
+					itemLevel: 1,
+					traits: {
+						joneskeeping: 1
+					}
 				},
 				{
 					affix: 'intimidation1',
-					itemLevel: 1
+					itemLevel: 1,
+					traits: {
+						intimidation: 1
+					}
 				},
 				{
 					affix: 'delegation1',
-					itemLevel: 1
+					itemLevel: 1,
+					traits: {
+						delegation: 1
+					}
 				},
 				{
 					affix: 'boner1',
-					itemLevel: 1
+					itemLevel: 1,
+					traits: {
+						boner: 1
+					}
 				},
 				{
 					affix: 'excess2',
-					itemLevel: 2
+					itemLevel: 2,
+					traits: {
+						excess: 2
+					}
 				},
 				{
 					affix: 'luxury2',
-					itemLevel: 2
+					itemLevel: 2,
+					traits: {
+						luxury: 2
+					}
 				},
 				{
 					affix: 'fame2',
-					itemLevel: 2
+					itemLevel: 2,
+					traits: {
+						fame: 2
+					}
 				},
 				{
 					affix: 'joneskeeping2',
-					itemLevel: 2
+					itemLevel: 2,
+					traits: {
+						joneskeeping: 2
+					}
 				},
 				{
 					affix: 'intimidation2',
-					itemLevel: 2
+					itemLevel: 2,
+					traits: {
+						intimidation: 2
+					}
 				},
 				{
 					affix: 'delegation2',
-					itemLevel: 2
+					itemLevel: 2,
+					traits: {
+						delegation: 2
+					}
 				},
 				{
 					affix: 'boner2',
-					itemLevel: 2
+					itemLevel: 2,
+					traits: {
+						boner: 2
+					}
 				},
 				{
 					affix: 'excess3',
-					itemLevel: 3
+					itemLevel: 3,
+					traits: {
+						excess: 3
+					}
 				},
 				{
 					affix: 'luxury3',
-					itemLevel: 3
+					itemLevel: 3,
+					traits: {
+						luxury: 3
+					}
 				},
 				{
 					affix: 'fame3',
-					itemLevel: 3
+					itemLevel: 3,
+					traits: {
+						fame: 3
+					}
 				},
 				{
 					affix: 'joneskeeping3',
-					itemLevel: 3
+					itemLevel: 3,
+					traits: {
+						joneskeeping: 3
+					}
 				},
 				{
 					affix: 'intimidation3',
-					itemLevel: 3
+					itemLevel: 3,
+					traits: {
+						intimidation: 3
+					}
 				},
 				{
 					affix: 'delegation3',
-					itemLevel: 3
+					itemLevel: 3,
+					traits: {
+						delegation: 3
+					}
 				},
 				{
 					affix: 'boner3',
-					itemLevel: 3
+					itemLevel: 3,
+					traits: {
+						boner: 3
+					}
 				},
 				{
 					affix: 'excess4',
-					itemLevel: 4
+					itemLevel: 4,
+					traits: {
+						excess: 4
+					}
 				},
 				{
 					affix: 'luxury4',
-					itemLevel: 4
+					itemLevel: 4,
+					traits: {
+						luxury: 4
+					}
 				},
 				{
 					affix: 'fame4',
-					itemLevel: 4
+					itemLevel: 4,
+					traits: {
+						fame: 4
+					}
 				},
 				{
 					affix: 'joneskeeping4',
-					itemLevel: 4
+					itemLevel: 4,
+					traits: {
+						joneskeeping: 4
+					}
 				},
 				{
 					affix: 'intimidation4',
-					itemLevel: 4
+					itemLevel: 4,
+					traits: {
+						intimidation: 4
+					}
 				},
 				{
 					affix: 'delegation4',
-					itemLevel: 4
+					itemLevel: 4,
+					traits: {
+						delegation: 4
+					}
 				},
 				{
 					affix: 'boner4',
-					itemLevel: 4
+					itemLevel: 4,
+					traits: {
+						boner: 4
+					}
 				},
 				{
 					affix: 'excess5',
-					itemLevel: 5
+					itemLevel: 5,
+					traits: {
+						excess: 5
+					}
 				},
 				{
 					affix: 'luxury5',
-					itemLevel: 5
+					itemLevel: 5,
+					traits: {
+						luxury: 5
+					}
 				},
 				{
 					affix: 'fame5',
-					itemLevel: 5
+					itemLevel: 5,
+					traits: {
+						fame: 5
+					}
 				},
 				{
 					affix: 'joneskeeping5',
-					itemLevel: 5
+					itemLevel: 5,
+					traits: {
+						joneskeeping: 5
+					}
 				},
 				{
 					affix: 'intimidation5',
-					itemLevel: 5
+					itemLevel: 5,
+					traits: {
+						intimidation: 5
+					}
 				},
 				{
 					affix: 'delegation5',
-					itemLevel: 5
+					itemLevel: 5,
+					traits: {
+						delegation: 5
+					}
 				},
 				{
 					affix: 'boner5',
-					itemLevel: 5
+					itemLevel: 5,
+					traits: {
+						boner: 5
+					}
 				},
 				{
 					affix: 'excess6',
-					itemLevel: 6
+					itemLevel: 6,
+					traits: {
+						excess: 6
+					}
 				},
 				{
 					affix: 'luxury6',
-					itemLevel: 6
+					itemLevel: 6,
+					traits: {
+						luxury: 6
+					}
 				},
 				{
 					affix: 'fame6',
-					itemLevel: 6
+					itemLevel: 6,
+					traits: {
+						fame: 6
+					}
 				},
 				{
 					affix: 'joneskeeping6',
-					itemLevel: 6
+					itemLevel: 6,
+					traits: {
+						joneskeeping: 6
+					}
 				},
 				{
 					affix: 'intimidation6',
-					itemLevel: 6
+					itemLevel: 6,
+					traits: {
+						intimidation: 6
+					}
 				},
 				{
 					affix: 'delegation6',
-					itemLevel: 6
+					itemLevel: 6,
+					traits: {
+						delegation: 6
+					}
 				},
 				{
 					affix: 'boner6',
-					itemLevel: 6
+					itemLevel: 6,
+					traits: {
+						boner: 6
+					}
 				},
 				{
 					affix: 'excess7',
-					itemLevel: 7
+					itemLevel: 7,
+					traits: {
+						excess: 7
+					}
 				},
 				{
 					affix: 'luxury7',
-					itemLevel: 7
+					itemLevel: 7,
+					traits: {
+						luxury: 7
+					}
 				},
 				{
 					affix: 'fame7',
-					itemLevel: 7
+					itemLevel: 7,
+					traits: {
+						fame: 7
+					}
 				},
 				{
 					affix: 'joneskeeping7',
-					itemLevel: 7
+					itemLevel: 7,
+					traits: {
+						joneskeeping: 7
+					}
 				},
 				{
 					affix: 'intimidation7',
-					itemLevel: 7
+					itemLevel: 7,
+					traits: {
+						intimidation: 7
+					}
 				},
 				{
 					affix: 'delegation7',
-					itemLevel: 7
+					itemLevel: 7,
+					traits: {
+						delegation: 7
+					}
 				},
 				{
 					affix: 'boner7',
-					itemLevel: 7
+					itemLevel: 7,
+					traits: {
+						boner: 7
+					}
 				},
 				{
 					affix: 'epic1',
-					itemLevel: -1
+					itemLevel: -1,
+					traits: {
+						excess: 1,
+
+					}
 				},
 				{
 					affix: 'epic2',
-					itemLevel: -1
+					itemLevel: -1,
+					traits: {
+						luxury: 1
+					}
 				},
 				{
 					affix: 'epic3',
-					itemLevel: -1
+					itemLevel: -1,
+					traits: {
+						fame: 1
+					}
 				},
 				{
 					affix: 'epic4',
-					itemLevel: -1
+					itemLevel: -1,
+					traits: {
+						joneskeeping: 1
+					}
 				},
 				{
 					affix: 'epic5',
-					itemLevel: -1
+					itemLevel: -1,
+					traits: {
+						intimidation: 1
+					}
 				},
 				{
 					affix: 'epic6',
-					itemLevel: -1
+					itemLevel: -1,
+					traits: {
+						delegation: 1
+					}
 				},
 				{
 					affix: 'epic7',
-					itemLevel: -1
+					itemLevel: -1,
+					traits: {
+						boner: 1
+					}
 				},
 			],
 			itemsByLevel,
