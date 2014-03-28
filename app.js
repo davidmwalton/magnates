@@ -65,36 +65,6 @@ $(document).ready(function () {
 			updateUI();
 		});
 
-		// dom.addAsset.on('click', function () {
-		// 	profile.assets += 1;
-
-		// 	switch (Math.floor(Math.random() * 7)) {
-		// 		case 0:
-		// 			profile.viceOMeter.boner += 1;
-		// 			break;
-		// 		case 1:
-		// 			profile.viceOMeter.excess += 1;
-		// 			break;
-		// 		case 2:
-		// 			profile.viceOMeter.luxury += 1;
-		// 			break;
-		// 		case 3:
-		// 			profile.viceOMeter.fame += 1;
-		// 			break;
-		// 		case 4:
-		// 			profile.viceOMeter.joneskeeping += 1;
-		// 			break;
-		// 		case 5:
-		// 			profile.viceOMeter.intimidation += 1;
-		// 			break;
-		// 		case 6:
-		// 			profile.viceOMeter.delegation += 1;
-		// 			break;
-		// 	}
-
-		// 	updateUI();
-		// });
-
 		dom.liquidateAsset.on('click', function () {
 			if (profile.assets.length > 0) {
 				profile.assets.pop();
@@ -142,34 +112,7 @@ $(document).ready(function () {
 			}
 		});
 
-		dom.showItems.on('click', function () {
-			var element, btnBuy, $element, $btnBuy,
-				items = getRandomItems(),
-				i, price;
-
-			dom.itemsList.empty();
-
-			for (i = 0; i < items.length ; i += 1) {
-				element = document.createElement('li');
-				btnBuy = document.createElement('button');
-				$btnBuy = $(btnBuy);
-				price = items[i].getPrice();
-				$btnBuy.text('Buy');
-
-				if (price > profile.cash) {
-					$btnBuy.attr('disabled', 'disabled');
-				}
-
-				$element = $(element);
-				$element.text(items[i].getName() + ': $' + commafy(price));
-
-				$element.append(btnBuy);
-				$element.data('item', items[i]);
-				dom.itemsList.append(element);
-			}
-
-			dom.itemsList.find('button').on('click', purchaseItem);
-		});
+		dom.showItems.on('click', onShowItems);
 
 		dom.levelUp.on('click', function () {
 			profile.level += 1;
@@ -198,11 +141,40 @@ $(document).ready(function () {
 		});
 	}
 
+	function onShowItems() {
+		var element, btnBuy, $element, $btnBuy,
+			items = getRandomItems(),
+			i, price;
+
+		dom.itemsList.empty();
+
+		for (i = 0; i < items.length ; i += 1) {
+			element = document.createElement('li');
+			btnBuy = document.createElement('button');
+			$btnBuy = $(btnBuy);
+			price = items[i].getPrice();
+			$btnBuy.text('Buy');
+
+			if (price > profile.cash) {
+				$btnBuy.attr('disabled', 'disabled');
+			}
+
+			$element = $(element);
+			$element.text(items[i].getName() + ': $' + commafy(price));
+
+			$element.append(btnBuy);
+			$element.data('item', items[i]);
+			dom.itemsList.append(element);
+		}
+
+		dom.itemsList.find('button').on('click', purchaseItem);
+	}
+
 	function purchaseItem() {
 		var $this = $(this),
 			$parent = $this.parent(),
 			item = $parent.data('item'),
-			price = getPriceFor(item);
+			price = item.getPrice();
 
 		if (profile.cash >= price) {
 			profile.cash -= price;
@@ -217,7 +189,7 @@ $(document).ready(function () {
 		var $this = $(this),
 			$parent = $this.parent(),
 			item = $parent.data('item'),
-			price = getSalePriceFor(item),
+			price = item.getSalePrice(),
 			index = profile.assets.indexOf(item);
 
 		if (index > -1) {
@@ -245,32 +217,6 @@ $(document).ready(function () {
 		}
 
 		return commafied;
-	}
-
-	function getPriceFor(item) {
-		var cost = 0, i;
-
-		if (item.prefix.itemLevel > 0) {
-			cost += item.prefix.itemLevel * Math.pow(10, profile.level);
-		} else {
-			cost += (profile.level + 3) * Math.pow(10, profile.level + 1);
-		}
-		if (item.root.itemLevel > 0) {
-			cost += item.root.itemLevel * Math.pow(10, profile.level);
-		} else {
-			cost += (profile.level + 3) * Math.pow(10, profile.level + 1);
-		}
-		if (item.suffix.itemLevel > 0) {
-			cost += item.suffix.itemLevel * Math.pow(10, profile.level);
-		} else {
-			cost += (profile.level + 3) * Math.pow(10, profile.level + 1);
-		}
-
-		return cost;
-	}
-
-	function getSalePriceFor(item) {
-		return getPriceFor(item) * 0.7;
 	}
 
 	function getRandomPrefix() {
@@ -324,7 +270,7 @@ $(document).ready(function () {
 		for (i = 0; i < $items.length; i += 1) {
 			$item = $($items[i]);
 			item = $item.data('item');
-			if (getPriceFor(item) > profile.cash) {
+			if (item.getPrice() > profile.cash) {
 				$item.find('button').attr('disabled', 'disabled');
 			} else {
 				$item.find('button').attr('disabled', null);
