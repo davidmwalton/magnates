@@ -38,6 +38,7 @@ $(document).ready(function () {
 			joneskeeping: $details.find('.joneskeeping'),
 			intimidation: $details.find('.intimidation'),
 			delegation: $details.find('.delegation'),
+			assetsList: $details.find('.assets-list'),
 			addInvestment: $('#add-investment'),
 			liquidateInvestment: $('#liquidate-investment'),
 			addAsset: $('#add-asset'),
@@ -142,18 +143,26 @@ $(document).ready(function () {
 		});
 
 		dom.showItems.on('click', function () {
-			var element, btnBuy, $element,
+			var element, btnBuy, $element, $btnBuy,
 				items = getRandomItems(),
-				i;
+				i, price;
 
 			dom.itemsList.empty();
 
 			for (i = 0; i < items.length ; i += 1) {
 				element = document.createElement('li');
 				btnBuy = document.createElement('button');
-				$(btnBuy).text('Buy');
+				$btnBuy = $(btnBuy);
+				price = items[i].getPrice();
+				$btnBuy.text('Buy');
+
+				if (price > profile.cash) {
+					$btnBuy.attr('disabled', 'disabled');
+				}
+
 				$element = $(element);
-				$element.text(items[i].prefix.affix + ' ' + items[i].root.affix + ' of ' + items[i].suffix.affix + ': $' + commafy(getPriceFor(items[i])));
+				$element.text(items[i].getName() + ': $' + commafy(price));
+
 				$element.append(btnBuy);
 				$element.data('item', items[i]);
 				dom.itemsList.append(element);
@@ -191,16 +200,33 @@ $(document).ready(function () {
 
 	function purchaseItem() {
 		var $this = $(this),
-			item = $this.parent().data('item'),
+			$parent = $this.parent(),
+			item = $parent.data('item'),
 			price = getPriceFor(item);
 
 		if (profile.cash >= price) {
 			profile.cash -= price;
 			profile.assets.push(item);
-			$this.attr('disabled', 'disabled');
+			$parent.remove();
 
 			updateUI();
 		}
+	}
+
+	function sellItem() {
+		var $this = $(this),
+			$parent = $this.parent(),
+			item = $parent.data('item'),
+			price = getSalePriceFor(item),
+			index = profile.assets.indexOf(item);
+
+		if (index > -1) {
+			profile.cash += price;
+			profile.assets.splice(index, 1);
+		}
+
+		$parent.remove();
+		updateUI();
 	}
 
 	function commafy(figure) {
@@ -243,6 +269,10 @@ $(document).ready(function () {
 		return cost;
 	}
 
+	function getSalePriceFor(item) {
+		return getPriceFor(item) * 0.7;
+	}
+
 	function getRandomPrefix() {
 		var prefixIndex = Math.floor(Math.random() * 7);
 
@@ -281,7 +311,25 @@ $(document).ready(function () {
 		dom.assets.text(profile.assets.length);
 		dom.assetImprovements.text(profile.assetImprovements);
 		
-		updateViceOMeterUI(getCurrentViceOMeter());
+		updateViceOMeterUi(getCurrentViceOMeter());
+		updateAssetsUi(profile.assets);
+		refreshSaleItems();
+	}
+
+	function refreshSaleItems() {
+		var i,
+			$items = dom.itemsList.find('li'),
+			item, $item;
+
+		for (i = 0; i < $items.length; i += 1) {
+			$item = $($items[i]);
+			item = $item.data('item');
+			if (getPriceFor(item) > profile.cash) {
+				$item.find('button').attr('disabled', 'disabled');
+			} else {
+				$item.find('button').attr('disabled', null);
+			}
+		}
 	}
 
 	function getCurrentViceOMeter() {
@@ -312,7 +360,7 @@ $(document).ready(function () {
 		return viceOMeter;
 	}
 
-	function updateViceOMeterUI(viceOMeter) {
+	function updateViceOMeterUi(viceOMeter) {
 		dom.boner.text(viceOMeter.boner);
 		dom.excess.text(viceOMeter.excess);
 		dom.luxury.text(viceOMeter.luxury);
@@ -322,22 +370,44 @@ $(document).ready(function () {
 		dom.delegation.text(viceOMeter.delegation);
 	}
 
+	function updateAssetsUi(assets) {
+		var element, btnSell, $element,
+			i;
+
+		dom.assetsList.empty();
+
+		for (i = 0; i < assets.length ; i += 1) {
+			element = document.createElement('li');
+			btnSell = document.createElement('button');
+			$(btnSell).text('Sell');
+			$element = $(element);
+			$element.text(assets[i].getName() + ': $' + commafy(assets[i].getSalePrice()));
+			$element.append(btnSell);
+			$element.data('item', assets[i]);
+			dom.assetsList.append(element);
+		}
+
+		dom.assetsList.find('button').on('click', sellItem);
+
+	}
+
 	function getRandomItems() {
 		var items = [],
 			i;
 
 		for (i = 0; i < 5; i += 1) {
-			items.push({
-				prefix: getRandomItem(),
-				root: getRandomItem(),
-				suffix: getRandomItem()
-			});
+			items.push(new Asset({
+				prefix: getRandomAffix(),
+				root: getRandomAffix(),
+				suffix: getRandomAffix(),
+				userLevel: profile.level
+			}));
 		}
 
 		return items;
 	}
 
-	function getRandomItem() {
+	function getRandomAffix() {
 		var i,
 			possibleItems = [
 				{
@@ -747,7 +817,7 @@ $(document).ready(function () {
 			rolledLevel;
 
 
-		rolledLevel = getRandomItemLevel();
+		rolledLevel = getRandomAffixLevel();
 
 		itemsByLevel = getItemsByLevel(possibleItems);
 
@@ -756,7 +826,7 @@ $(document).ready(function () {
 		return itemsByLevel[rolledLevel][i];
 	}
 
-	function getRandomItemLevel() {
+	function getRandomAffixLevel() {
 		var i = Math.floor(Math.random() * 100);
 
 		if (i < 70) {
