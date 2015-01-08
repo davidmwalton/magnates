@@ -1,0 +1,20 @@
+{
+  "name": "magnates",
+  "version": "1.0.0",
+  "description": "magnates: how do they work?",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/davidmwalton/magnates"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/davidmwalton/magnates/issues"
+  },
+  "homepage": "https://github.com/davidmwalton/magnates"
+}
