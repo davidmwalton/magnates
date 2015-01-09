@@ -1,0 +1,23 @@
+<div class="create">
+    <h1>Magnates: How do they work?</h1>
+
+    <h2>We're in a game!</h2>
+
+    <h3>Game details:</h3>
+    <ul>
+        <li>Name: {{currentGameConfig.name}}</li>
+        <li>Gender: {{currentGameConfig.gender}}</li>
+        <li>Complexion: {{currentGameConfig.complexion}}</li>
+        <li>Hair Color: {{currentGameConfig.hairColor}}</li>
+    </ul>
+
+    <ul>
+        <li><a ng-show="pageId !== 'summary'" href="#game/summary">Summary</a><span ng-show="pageId === 'summary'">Summary</span></li>
+        <li><a ng-show="pageId !== 'market'" href="#game/market">Market</a><span ng-show="pageId === 'market'">Market</span></li>
+        <li><a ng-show="pageId !== 'stocks'" href="#game/stocks">Stocks</a><span ng-show="pageId === 'stocks'">Stocks</span></li>
+    </ul>
+
+    <h3>Page: {{pageId}}</h3>
+
+    <p><a href="#/">Back to the main menu</a></p>
+</div>

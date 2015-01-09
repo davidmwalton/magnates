@@ -2,12 +2,30 @@
     'use strict';
 
     var magnatesApp = angular.module('magnatesApp', [
-        'ngRoute',
-        'magnatesControllers'
-    ]);
+            'ngRoute',
+            'magnatesControllers'
+        ]),
+        browserSupportsHtml5Storage = function () {
+            try {
+                return 'localStorage' in window && window['localStorage'] !== null;
+            } catch (e) {
+                return false;
+            }
+        };
 
     magnatesApp.config(['$routeProvider',
         function ($routeProvider) {
+            if (!browserSupportsHtml5Storage()) {
+                $routeProvider.
+                    when('/', {
+                        templateUrl: 'app/controllers/unsupported.view.html'
+                    }).
+                    otherwise({
+                        redirectTo: '/'
+                    });
+                return;
+            }
+
             $routeProvider.
                 when('/credits', {
                     templateUrl: 'app/controllers/credits.view.html',
@@ -24,6 +42,13 @@
                 when('/load', {
                     templateUrl: 'app/controllers/load.view.html',
                     controller: 'LoadCtrl'
+                }).
+                when('/game', {
+                    redirectTo: '/game/summary'
+                }).
+                when('/game/:pageId', {
+                    templateUrl: 'app/controllers/game.view.html',
+                    controller: 'GameCtrl'
                 }).
                 when('/', {
                     templateUrl: 'app/controllers/start-menu.view.html',

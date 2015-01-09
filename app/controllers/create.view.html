@@ -3,5 +3,55 @@
 
     <h2>Create a new game</h2>
 
+    <fieldset>
+        <ul>
+            <li>
+                <label for="create-game-name">Name: </label><input id="create-game-name" ng-model="name" />
+            </li>
+            <li>
+                <label for="create-game-name">Gender: </label>
+                <select ng-model="gender">
+                    <option value="Asex">Asex</option>
+                    <option value="Female">Female</option>
+                    <option value="Male">Male</option>
+                    <option value="Trans">Trans</option>
+                </select>
+            </li>
+            <li>
+                <label for="create-game-complexion">Complexion: </label>
+                <select ng-model="complexion">
+                    <option value="Brown">Brown</option>
+                    <option value="Dark Brown">Dark Brown</option>
+                    <option value="Maize">Maize</option>
+                    <option value="Olive">Olive</option>
+                    <option value="Pale">Pale</option>
+                    <option value="Ruddy">Ruddy</option>
+                    <option value="Tan">Tan</option>
+                </select>
+            </li>
+            <li>
+                <label for="create-game-hair-color">Hair Color: </label>
+                <select ng-model="hairColor">
+                    <option value="Black">Black</option>
+                    <option value="Blonde">Blonde</option>
+                    <option value="Blue">Blue</option>
+                    <option value="Brown">Brown</option>
+                    <option value="Green">Green</option>
+                    <option value="Orange">Orange</option>
+                    <option value="Navy">Navy</option>
+                    <option value="Pink">Pink</option>
+                    <option value="Purps">Purps</option>
+                    <option value="Red">Red</option>
+                    <option value="Silver">Silver</option>
+                    <option value="Tan">Tan</option>
+                    <option value="White">White</option>
+                </select>
+            </li>
+        </ul>
+    </fieldset>
+
+
+    <p><a href="#game" ng-click="onPlayClicked()">Play!</a></p>
+
     <p><a href="#/">Back</a></p>
 </div>
