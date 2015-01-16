@@ -3,9 +3,19 @@
 
     var magnatesControllers = angular.module('magnatesControllers'),
 
-        controller = function ($scope, $routeParams) {
+        loadGame = function (game) {
+            var $scope = this;
+            $scope.gamePersistenceService.setCurrentGameConfig(game);
+
+            return true;
+        },
+
+        controller = function ($scope, $routeParams, gamePersistenceService) {
             $scope.name = 'Load Controller';
+            $scope.gamePersistenceService = gamePersistenceService;
+            $scope.savedGames = gamePersistenceService.loadGames();
+            $scope.loadGame = loadGame.bind($scope);
         };
 
-    magnatesControllers.controller('LoadCtrl', ['$scope', '$routeParams', controller]);
+    magnatesControllers.controller('LoadCtrl', ['$scope', '$routeParams', 'gamePersistenceService', controller]);
 })();

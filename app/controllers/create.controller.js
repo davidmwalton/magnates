@@ -18,14 +18,16 @@
             var $scope = this,
                 gameConfig = getGameConfig($scope);
 
-            window.localStorage.setItem('currentGameConfig', JSON.stringify(gameConfig));
+            $scope.gamePersistenceService.saveGameConfig(gameConfig);
+            $scope.gamePersistenceService.setCurrentGameConfig(gameConfig);
 
             return true;
         },
 
-        controller = function ($scope, $routeParams) {
+        controller = function ($scope, $routeParams, gamePersistenceService) {
+            $scope.gamePersistenceService = gamePersistenceService;
             $scope.onPlayClicked = onPlayClicked.bind($scope);
         };
 
-    magnatesControllers.controller('CreateCtrl', ['$scope', '$routeParams', controller]);
+    magnatesControllers.controller('CreateCtrl', ['$scope', '$routeParams', 'gamePersistenceService', controller]);
 })();

@@ -3,4 +3,3 @@
 
     var magnatesControllers = angular.module('magnatesControllers', []);
 })();
-

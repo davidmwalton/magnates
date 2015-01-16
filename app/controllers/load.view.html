@@ -3,7 +3,9 @@
 
     <h2>Load a saved game</h2>
 
-    <p><a href="#game">Play!</a></p>
+    <ul>
+        <li ng-repeat="game in savedGames"><a href="#game" ng-click="loadGame(game)">{{game.name}}</a></li>
+    </ul>
 
     <p><a href="#/">Back</a></p>
 </div>

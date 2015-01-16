@@ -3,7 +3,8 @@
 
     var magnatesApp = angular.module('magnatesApp', [
             'ngRoute',
-            'magnatesControllers'
+            'magnatesControllers',
+            'magnatesServices'
         ]),
         browserSupportsHtml5Storage = function () {
             try {
