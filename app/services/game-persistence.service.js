@@ -31,6 +31,10 @@
             window.localStorage.setItem('currentGameConfig', JSON.stringify(gameConfig));
         },
 
+        getCurrentGameConfig = function () {
+            return JSON.parse(window.localStorage.getItem('currentGameConfig'));
+        },
+
         service = function (guidHelperService) {
             var service = {};
 
@@ -39,6 +43,7 @@
             service.setCurrentGameConfig = setCurrentGameConfig;
             service.saveGameConfig = saveGameConfig;
             service.loadGames = loadGames;
+            service.getCurrentGameConfig = getCurrentGameConfig;
 
             return service;
         };
