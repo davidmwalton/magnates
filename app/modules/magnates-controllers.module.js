@@ -1,5 +1,5 @@
 (function () {
     'use strict'
 
-    var magnatesControllers = angular.module('magnatesControllers', []);
+    angular.module('magnatesControllers', []);
 })();

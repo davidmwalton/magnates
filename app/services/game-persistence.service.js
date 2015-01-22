@@ -1,52 +1,49 @@
 (function () {
     'use strict';
 
-    var magnatesServices = angular.module('magnatesServices'),
+    var scope = {};
 
-        scope = {},
+    function service(guidHelperService) {
+        scope.guidHelperService = guidHelperService;
 
-        loadGames = function () {
-            var savedGames = JSON.parse(window.localStorage.getItem('savedGames'));
+        this.setCurrentGameConfig = setCurrentGameConfig;
+        this.saveGameConfig = saveGameConfig;
+        this.loadGames = loadGames;
+        this.getCurrentGameConfig = getCurrentGameConfig;
 
-            if (!savedGames) {
-                savedGames = {};
-            }
+        return this;
+    }
 
-            return savedGames;
-        },
+    function loadGames() {
+        var savedGames = JSON.parse(window.localStorage.getItem('savedGames'));
 
-        saveGameConfig = function (gameConfig) {
-            var savedGames = loadGames();
+        if (!savedGames) {
+            savedGames = {};
+        }
 
-            if (!gameConfig.id) {
-                gameConfig.id = scope.guidHelperService.generateNewHashKey();
-            }
+        return savedGames;
+    }
 
-            savedGames[gameConfig.id] = gameConfig;
+    function saveGameConfig(gameConfig) {
+        var savedGames = loadGames();
 
-            window.localStorage.setItem('savedGames', JSON.stringify(savedGames));
-        },
+        if (!gameConfig.id) {
+            gameConfig.id = scope.guidHelperService.generateNewHashKey();
+        }
 
-        setCurrentGameConfig = function (gameConfig) {
-            window.localStorage.setItem('currentGameConfig', JSON.stringify(gameConfig));
-        },
+        savedGames[gameConfig.id] = gameConfig;
 
-        getCurrentGameConfig = function () {
-            return JSON.parse(window.localStorage.getItem('currentGameConfig'));
-        },
+        window.localStorage.setItem('savedGames', JSON.stringify(savedGames));
+    }
 
-        service = function (guidHelperService) {
-            var service = {};
+    function setCurrentGameConfig(gameConfig) {
+        window.localStorage.setItem('currentGameConfig', JSON.stringify(gameConfig));
+    }
 
-            scope.guidHelperService = guidHelperService;
+    function getCurrentGameConfig() {
+        return JSON.parse(window.localStorage.getItem('currentGameConfig'));
+    }
 
-            service.setCurrentGameConfig = setCurrentGameConfig;
-            service.saveGameConfig = saveGameConfig;
-            service.loadGames = loadGames;
-            service.getCurrentGameConfig = getCurrentGameConfig;
 
-            return service;
-        };
-
-    magnatesServices.factory('gamePersistenceService', ['guidHelperService', service]);
+    angular.module('magnatesServices').service('gamePersistenceService', ['guidHelperService', service]);
 })();

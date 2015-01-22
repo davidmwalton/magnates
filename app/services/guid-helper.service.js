@@ -1,41 +1,37 @@
 (function () {
     'use strict';
 
-    var magnatesServices = angular.module('magnatesServices'),
-        characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+    var characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
+    function service() {
+        this.generateNewGuid = generateNewGuid;
+        this.generateEmptyGuid = generateEmptyGuid;
+        this.generateNewHashKey = generateNewHashKey;
 
-        generateNewGuid = function () {
-            return '123-456-789';
-        },
+        return this;
+    }
 
-        generateEmptyGuid = function () {
-            return '000-000-000';
-        },
+    function generateNewGuid() {
+        return '123-456-789';
+    }
 
-        generateNewHashKey = function () {
-            var i,
-                newKey = '',
-                rand;
+    function generateEmptyGuid() {
+        return '000-000-000';
+    }
 
-            for (i = 0; i < 24; i += 1) {
-                rand = Math.floor(Math.random() * 52);
+    function generateNewHashKey() {
+        var i,
+            newKey = '',
+            rand;
 
-                newKey += characters[rand];
-            }
+        for (i = 0; i < 24; i += 1) {
+            rand = Math.floor(Math.random() * 52);
 
-            return newKey;
-        },
+            newKey += characters[rand];
+        }
 
-        service = function (guidHelperService) {
-            var service = {};
+        return newKey;
+    }
 
-            service.generateNewGuid = generateNewGuid;
-            service.generateEmptyGuid = generateEmptyGuid;
-            service.generateNewHashKey = generateNewHashKey;
-
-            return service;
-        };
-
-    magnatesServices.factory('guidHelperService', [service]);
+    angular.module('magnatesServices').service('guidHelperService', [service]);
 })();

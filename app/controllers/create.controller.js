@@ -1,15 +1,8 @@
 (function () {
     'use strict';
 
-    var magnatesControllers = angular.module('magnatesControllers'),
-
-        getGameConfig = function ($scope) {
-            var gameConfig = {};
-
-            gameConfig.name = $scope.name;
-            gameConfig.gender = $scope.gender;
-            gameConfig.complexion = $scope.complexion;
-            gameConfig.hairColor = $scope.hairColor;
+    var getGameConfig = function ($scope) {
+            var gameConfig = new $scope.gameFactory($scope);
 
             return gameConfig;
         },
@@ -24,10 +17,12 @@
             return true;
         },
 
-        controller = function ($scope, $routeParams, gamePersistenceService) {
+        controller = function ($scope, $routeParams, gamePersistenceService, gameFactory) {
             $scope.gamePersistenceService = gamePersistenceService;
+            $scope.gameFactory = gameFactory;
             $scope.onPlayClicked = onPlayClicked.bind($scope);
         };
 
-    magnatesControllers.controller('CreateCtrl', ['$scope', '$routeParams', 'gamePersistenceService', controller]);
+    controller['$inject'] = ['$scope', '$routeParams', 'gamePersistenceService', 'gameFactory']
+    angular.module('magnatesControllers').controller('CreateCtrl', controller);
 })();
