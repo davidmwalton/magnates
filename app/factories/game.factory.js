@@ -8,6 +8,9 @@
             this.gender = settings.gender;
             this.complexion = settings.complexion;
             this.hairColor = settings.hairColor;
+
+            this.isNew = true || settings.isNew;
+            this.tutorialEnabled = true || settings.tutorialEnabled;
         }
 
         Game.prototype.getName = function () {

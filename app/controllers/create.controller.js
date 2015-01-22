@@ -21,6 +21,7 @@
             $scope.gamePersistenceService = gamePersistenceService;
             $scope.gameFactory = gameFactory;
             $scope.onPlayClicked = onPlayClicked.bind($scope);
+            $scope.enableTutorial = true;
         };
 
     controller['$inject'] = ['$scope', '$routeParams', 'gamePersistenceService', 'gameFactory']

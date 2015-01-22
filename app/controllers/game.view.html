@@ -9,6 +9,8 @@
         <li>Gender: {{currentGameConfig.gender}}</li>
         <li>Complexion: {{currentGameConfig.complexion}}</li>
         <li>Hair Color: {{currentGameConfig.hairColor}}</li>
+        <li>New game?: {{currentGameConfig.isNew || 'false'}}</li>
+        <li>Tutorial: <a href="javascript:void(0);" ng-show="!currentGameConfig.tutorialEnabled" ng-click="enableTutorial()">enable</a><span ng-show="currentGameConfig.tutorialEnabled">enabled</span> | <span ng-show="!currentGameConfig.tutorialEnabled">disabled</span><a href="javascript:void(0);" ng-show="currentGameConfig.tutorialEnabled" ng-click="disableTutorial()">disable</a></li>
     </ul>
 
     <ul>
@@ -20,4 +22,17 @@
     <h3>Page: {{pageId}}</h3>
 
     <p><a href="#/">Back to the main menu</a></p>
+
+    <div ng-if="currentGameConfig.tutorialEnabled && currentGameConfig.isNew">
+        <h3>Welcome!</h3>
+        <p>You've just embarked on an adventure of capital!</p>
+    </div>
+    <div ng-if="currentGameConfig.isNew && !currentGameConfig.tutorialEnabled">
+        <h3>Welcome!</h3>
+        <p>You seem to know your way around: hop to it. You can reenable the tutorial at any time</p>
+    </div>
+    <div ng-if="currentGameConfig.tutorialEnabled && !currentGameConfig.isNew">
+        <h3>Welcome back!</h3>
+        <p>Here's some helpful advice</p>
+    </div>
 </div>
