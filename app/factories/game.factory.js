@@ -1,6 +1,12 @@
 (function () {
     'use strict';
 
+    angular
+        .module('magnatesFactories')
+        .factory('gameFactory', gameFactory);
+
+    gameFactory.$inject = [];
+    
     function gameFactory() {
 
         function Game(settings) {
@@ -20,5 +26,5 @@
         return Game;
     }
 
-    angular.module('magnatesFactories').factory('gameFactory', [gameFactory]);
+    
 })();

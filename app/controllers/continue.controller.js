@@ -1,13 +1,20 @@
 (function () {
     'use strict';
 
-    var magnatesControllers = angular.module('magnatesControllers'),
+    // This is meant to be an example of a "better" way to structure controllers.
+    // Should try to implement cleanup on the other controllers at some point.
+    // https://github.com/johnpapa/angular-styleguide
 
-        controller = function ($scope, $routeParams, gamePersistenceService) {
-            $scope.name = 'Continue Controller';
+    angular
+        .module('magnatesControllers')
+        .controller('ContinueController', ContinueController);
 
-            $scope.game = gamePersistenceService.getCurrentGameConfig();
-        };
+    ContinueController.$inject = ['$scope', '$routeParams', 'gamePersistenceService'];
 
-    magnatesControllers.controller('ContinueCtrl', ['$scope', '$routeParams', 'gamePersistenceService', controller]);
+    function ContinueController($scope, $routeParams, gamePersistenceService) {
+        var vm = this;
+
+        vm.name = 'Continue Controller';
+        vm.game = gamePersistenceService.getCurrentGameConfig();
+    };
 })();

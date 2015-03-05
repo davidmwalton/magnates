@@ -35,11 +35,13 @@
                 }).
                 when('/create', {
                     templateUrl: 'app/controllers/create.view.html',
-                    controller: 'CreateCtrl'
+                    controller: 'CreateController',
+                    controllerAs: 'vm'
                 }).
                 when('/continue', {
                     templateUrl: 'app/controllers/continue.view.html',
-                    controller: 'ContinueCtrl'
+                    controller: 'ContinueController',
+                    controllerAs: 'vm'
                 }).
                 when('/load', {
                     templateUrl: 'app/controllers/load.view.html',

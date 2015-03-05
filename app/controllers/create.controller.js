@@ -1,29 +1,37 @@
 (function () {
     'use strict';
 
-    var getGameConfig = function ($scope) {
-            var gameConfig = new $scope.gameFactory($scope);
+    angular
+        .module('magnatesControllers')
+        .controller('CreateController', CreateController);
 
-            return gameConfig;
-        },
+    CreateController.$inject = ['$scope', '$routeParams', 'gamePersistenceService', 'gameFactory'];
+    
 
-        onPlayClicked = function () {
-            var $scope = this,
-                gameConfig = getGameConfig($scope);
+    function CreateController($scope, $routeParams, gamePersistenceService, gameFactory) {
+        var vm = this;
 
-            $scope.gamePersistenceService.saveGameConfig(gameConfig);
-            $scope.gamePersistenceService.setCurrentGameConfig(gameConfig);
+        vm.gamePersistenceService = gamePersistenceService;
+        vm.gameFactory = gameFactory;
+        vm.onPlayClicked = onPlayClicked.bind(vm);
+        vm.enableTutorial = true;
+    }
 
-            return true;
-        },
+    function getGameConfig(vm) {
+        var gameConfig = new vm.gameFactory(vm);
 
-        controller = function ($scope, $routeParams, gamePersistenceService, gameFactory) {
-            $scope.gamePersistenceService = gamePersistenceService;
-            $scope.gameFactory = gameFactory;
-            $scope.onPlayClicked = onPlayClicked.bind($scope);
-            $scope.enableTutorial = true;
-        };
+        return gameConfig;
+    }
 
-    controller['$inject'] = ['$scope', '$routeParams', 'gamePersistenceService', 'gameFactory']
-    angular.module('magnatesControllers').controller('CreateCtrl', controller);
+    function onPlayClicked() {
+        var vm = this,
+            gameConfig = getGameConfig(vm);
+
+        vm.gamePersistenceService.saveGameConfig(gameConfig);
+        vm.gamePersistenceService.setCurrentGameConfig(gameConfig);
+
+        return true;
+    }
+
+
 })();

@@ -1,10 +1,17 @@
 (function () {
     'use strict';
 
-    var scope = {};
+    // This is meant to be an example of a "better" way to structure services.
+    // Should try to implement cleanup on the other services at some point.
+    // https://github.com/johnpapa/angular-styleguide
 
-    function service(guidHelperService) {
-        scope.guidHelperService = guidHelperService;
+    angular
+        .module('magnatesServices')
+        .service('gamePersistenceService', gamePersistenceService);
+
+    gamePersistenceService.$inject = ['guidHelperService'];
+
+    function gamePersistenceService(guidHelperService) {
 
         this.setCurrentGameConfig = setCurrentGameConfig;
         this.saveGameConfig = saveGameConfig;
@@ -12,38 +19,38 @@
         this.getCurrentGameConfig = getCurrentGameConfig;
 
         return this;
-    }
 
-    function loadGames() {
-        var savedGames = JSON.parse(window.localStorage.getItem('savedGames'));
+        function loadGames() {
+            var savedGames = JSON.parse(window.localStorage.getItem('savedGames'));
 
-        if (!savedGames) {
-            savedGames = {};
+            if (!savedGames) {
+                savedGames = {};
+            }
+
+            return savedGames;
         }
 
-        return savedGames;
-    }
+        function saveGameConfig(gameConfig) {
+            var savedGames = loadGames();
 
-    function saveGameConfig(gameConfig) {
-        var savedGames = loadGames();
+            if (!gameConfig.id) {
+                gameConfig.id = guidHelperService.generateNewHashKey();
+            }
 
-        if (!gameConfig.id) {
-            gameConfig.id = scope.guidHelperService.generateNewHashKey();
+            savedGames[gameConfig.id] = gameConfig;
+
+            window.localStorage.setItem('savedGames', JSON.stringify(savedGames));
         }
 
-        savedGames[gameConfig.id] = gameConfig;
+        function setCurrentGameConfig(gameConfig) {
+            window.localStorage.setItem('currentGameConfig', JSON.stringify(gameConfig));
+        }
 
-        window.localStorage.setItem('savedGames', JSON.stringify(savedGames));
-    }
-
-    function setCurrentGameConfig(gameConfig) {
-        window.localStorage.setItem('currentGameConfig', JSON.stringify(gameConfig));
-    }
-
-    function getCurrentGameConfig() {
-        return JSON.parse(window.localStorage.getItem('currentGameConfig'));
+        function getCurrentGameConfig() {
+            return JSON.parse(window.localStorage.getItem('currentGameConfig'));
+        }
     }
 
 
-    angular.module('magnatesServices').service('gamePersistenceService', ['guidHelperService', service]);
+
 })();

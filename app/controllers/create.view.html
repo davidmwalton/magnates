@@ -6,11 +6,11 @@
     <fieldset>
         <ul>
             <li>
-                <label for="create-game-name">Name: </label><input id="create-game-name" ng-model="name" />
+                <label for="create-game-name">Name: </label><input id="create-game-name" ng-model="vm.name" />
             </li>
             <li>
                 <label for="create-game-name">Gender: </label>
-                <select ng-model="gender">
+                <select ng-model="vm.gender">
                     <option value="Asex">Asex</option>
                     <option value="Female">Female</option>
                     <option value="Male">Male</option>
@@ -19,7 +19,7 @@
             </li>
             <li>
                 <label for="create-game-complexion">Complexion: </label>
-                <select ng-model="complexion">
+                <select ng-model="vm.complexion">
                     <option value="Brown">Brown</option>
                     <option value="Dark Brown">Dark Brown</option>
                     <option value="Maize">Maize</option>
@@ -31,7 +31,7 @@
             </li>
             <li>
                 <label for="create-game-hair-color">Hair Color: </label>
-                <select ng-model="hairColor">
+                <select ng-model="vm.hairColor">
                     <option value="Black">Black</option>
                     <option value="Blonde">Blonde</option>
                     <option value="Blue">Blue</option>
@@ -48,13 +48,13 @@
                 </select>
             </li>
             <li>
-                <label for="create-game-enable-tutorial">Enable tutorial?</label><input id="create-game-enable-tutorial" type="checkbox" ng-model="enableTutorial"/>
+                <label for="create-game-enable-tutorial">Enable tutorial?</label><input id="create-game-enable-tutorial" type="checkbox" ng-model="vm.enableTutorial"/>
             </li>
         </ul>
     </fieldset>
 
 
-    <p><a href="#game" ng-click="onPlayClicked()">Play!</a></p>
+    <p><a href="#game" ng-click="vm.onPlayClicked()">Play!</a></p>
 
     <p><a href="#/">Back</a></p>
 </div>
